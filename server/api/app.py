@@ -1,9 +1,14 @@
 from starlette.requests import Request
+from starlette.responses import JSONResponse
+
 from mcp.server.sse import SseServerTransport
 from .mcp_api import mcp_server
 
 sse = SseServerTransport("/messages/")
 sse_post_messages_handler = sse.handle_post_message
+
+async def health_check(request: Request):
+    return JSONResponse({"status": "ok"})
 
 async def sse_session_endpoint(request: Request) -> None:
     async with sse.connect_sse(
@@ -20,5 +25,6 @@ async def sse_session_endpoint(request: Request) -> None:
 
 __all__ = [
     'sse_session_endpoint',
-    'sse_post_messages_handler'
+    'sse_post_messages_handler',
+    "health_check"
 ]
