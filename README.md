@@ -114,10 +114,72 @@ def multiply(a: int, b: int) -> int:
 @mcp.tool()
 async def get_japan_economic_statistics() -> str:
     """
-    Use this tool if you need any data about the Japanese economy over the past 25 years.
+    Use this tool if you need any data about the Japanese economic over the past 25 years.
     """
     pass
 ~~~
+
+Here’s what a list_tools response might look like for the example we mentioned above:
+
+~~~json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "multiply",
+        "description": "\n    Multiply two numbers\n    ",
+        "inputSchema": {
+          "properties": {
+            "a": {
+              "title": "A",
+              "type": "integer"
+            },
+            "b": {
+              "title": "B",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "title": "multiplyArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_japan_economic_statistics",
+        "description": "\n    Use this tool if you need any data about the Japanese economic over the past 25 years.\n    ",
+        "inputSchema": {
+          "properties": {},
+          "title": "get_japan_economic_statisticsArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_alerts",
+        "description": "Get weather alerts for a US state.\n\n    Args:\n        state: Two-letter US state code (e.g. CA, NY)\n    ",
+        "inputSchema": {
+          "properties": {
+            "state": {
+              "title": "State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "state"
+          ],
+          "title": "get_alertsArguments",
+          "type": "object"
+        }
+      }
+    ]
+  }
+}
+~~~
+
 
 Once the model receives the list of available tools, it decides which one (if any) fits the user’s request. When it
 wants to use one, it responds with something like:
@@ -132,6 +194,8 @@ From there, the model picks up the conversation again, now with the new informat
 MCP standardizes the entire tool interaction lifecycle—declaration, invocation, error handling, and result delivery.
 This makes it possible to build complex chains of actions: the model can call multiple tools in sequence, with each step
 depending on the previous one.
+
+
 
 ### Memory: Giving the Assistant a Long-Term Brain
 
