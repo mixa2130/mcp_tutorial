@@ -63,11 +63,12 @@ MCP also gives models access to two key types of resources:
 At the heart of MCP is a simple but powerful idea: dialogue.
 
 MCP structures conversations as a sequence of messages, each with a clearly defined role:
-• User – That’s us, the humans asking questions or giving instructions.
-• Assistant – The AI model responding to us.
-• System – System-level instructions that guide the model’s behavior (e.g., “Answer as a polite assistant” or “Only use
+
+* User – That’s us, the humans asking questions or giving instructions.
+* Assistant – The AI model responding to us.
+* System – System-level instructions that guide the model’s behavior (e.g., “Answer as a polite assistant” or “Only use
 the provided documents”).
-• Tool – Messages representing the output of external tools or services that the MCP server interacts with.
+* Tool – Messages representing the output of external tools or services that the MCP server interacts with.
 
 Each message contains text and can optionally include metadata like timestamps, language, priority, and more.
 
@@ -88,9 +89,9 @@ Tools in MCP are essentially external functions or services that the model can c
 built-in capabilities.
 
 Each tool is defined by the MCP server with three key elements:
-• A name
-• A clear description, so the model understands when to use it
-• A parameter schema that defines what kind of inputs the tool expects
+* A name
+* A clear description, so the model understands when to use it
+* A parameter schema that defines what kind of inputs the tool expects
 
 For example, you might define a tool called “Japan Economic Database 2000–2025” with a description like:
 “Use this tool if you need any data about the Japanese economy over the past 25 years.”
@@ -135,8 +136,8 @@ In addition to calling tools, the model often needs to access static data like f
 or logs. In MCP, these are referred to as resources.
 
 Resources are announced by the server using URI schemes, such as:
-• file:///path/doc.txt
-• database://customers/123
+* file:///path/doc.txt
+* database://customers/123
 
 (Quick note: Earlier, we described a database as a tool. That’s accurate when there’s an API sitting on top of it. But
 it can also be treated as a resource, depending on what fits best for your application.)
