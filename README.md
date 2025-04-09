@@ -93,10 +93,31 @@ Each tool is defined by the MCP server with three key elements:
 * A clear description, so the model understands when to use it
 * A parameter schema that defines what kind of inputs the tool expects
 
-For example, you might define a tool called “Japan Economic Database 2000–2025” with a description like:
-“Use this tool if you need any data about the Japanese economy over the past 25 years.”
+~~~python
+@mcp.tool()
+async def get_alerts(state: str) -> str:
+    """
+    Get weather alerts for a US state.
 
-You’d also specify the parameters it can accept—like a date range, economic indicator, or region.
+    Args:
+        state: Two-letter US state code (e.g. CA, NY)
+    """
+    pass
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """
+    Multiply two numbers
+    """
+    return a * b
+
+@mcp.tool()
+async def get_japan_economic_statistics() -> str:
+    """
+    Use this tool if you need any data about the Japanese economy over the past 25 years.
+    """
+    pass
+~~~
 
 Once the model receives the list of available tools, it decides which one (if any) fits the user’s request. When it
 wants to use one, it responds with something like:
