@@ -10,36 +10,31 @@ Our Goals:
 2. Build an MCP server that can run outside your local machine - for example, in a Kubernetes cluster
 3. Create an MCP client that uses an LLM to communicate with our server
 
-## What is MCP ?
+## What is MCP and why do we need it ?
 
-No one can explain MCP better than its developers themselves: https://modelcontextprotocol.io/introduction
+Modern AI assistants like ChatGPT, Claude, and Gemini can generate fluent, intelligent responses—but when it comes to
+working with real-world data, they often fall short. Despite their conversational brilliance, these models operate in an
+“information vacuum,” struggling to interact seamlessly with external tools, APIs, or databases. For anyone who’s tried
+integrating a language model with a live service, the process can feel frustratingly inconsistent—like dealing with a
+drawer full of proprietary phone chargers before USB-C.
 
-But I’ll do my best to summarize it.
-
-MCP (Model Context Protocol) is a standard introduced by Anthropic in 2024. Its main goal is to standardize how
-applications provide context to LLMs. Anthropic describes it as the “USB-C port for AI apps.”
+That’s where the Model Context Protocol (MCP) comes in. Introduced by Anthropic in November 2024, MCP is a universal
+standard designed to give AI models structured, contextual access to external information. Think of it as the USB-C of
+AI: a clean, standardized connector between smart assistants and the data ecosystems they’re meant to work within.
 
 <img src="images/mcp_type_c.png" width="700" height="400" />
 
-In this article, we’ll take a closer look at MCP and even build our own MCP server and client.
 
-## Why is MCP needed?
+The main goal of MCP is to unify how applications share **context* with large language models. That context can include
+anything from conversation history and prompt instructions to real-time search results, proprietary data, or even memory
+from past interactions. Whether the relevant information lives in a file system, corporate application, database, or
+internal knowledge base, MCP provides a single, consistent way to surface it to the model.
 
-https://mcp.so/
+By replacing a patchwork of custom integrations with a common protocol, MCP makes it faster and easier to connect LLMs
+to the real world. In a landscape overflowing with fragmented solutions, it’s a long-overdue step toward making AI not
+just smart—but truly useful.
 
 ## What's inside?
-
-The main purpose of MCP is to unify how applications share context with LLMs.
-
-*“Context”* includes everything a model needs to respond meaningfully: conversation history, prompt instructions,
-external
-data (like search results if the model can “Google”), and memory of past interactions.
-
-MCP answers a key question: How can we give a model access to the data it needs—wherever that data lives? Whether it’s
-in files, corporate applications, knowledge bases, or databases, MCP provides a standardized way to connect it.
-
-Instead of relying on a messy patchwork of custom integrations, MCP offers a single protocol that simplifies and speeds
-up connecting new data sources.
 
 The architecture follows a familiar client-server model, but with an AI specific.
 It’s tailored specifically for the needs of large language models.
@@ -56,6 +51,61 @@ MCP also gives models access to two key types of resources:
 * Data Sources: Your computer’s files, databases, and services that MCP servers can securely access
 * Remote Services: External systems available over the internet (e.g., through APIs) that MCP servers can connect to
 
+## Transports
+
+MCP uses JSON-RPC 2.0 as its wire format.
+
+The transport layer is responsible for converting MCP protocol messages into
+JSON-RPC format for transmission and converting received JSON-RPC messages back into MCP protocol messages.
+
+There are three types of JSON-RPC messages used:
+
+1) Requests
+2) Responses
+3) Notifications
+
+MCP includes two standard [transport](https://modelcontextprotocol.io/docs/concepts/transports) implementations:
+
+### stdio
+
+The stdio transport enables communication through standard input and output streams.
+
+<img src="images/mcp_stdio.png" width="600" height="300" />
+
+✅ **Use stdio when:**
+
+* Building command-line tools
+* Implementing local integrations
+* Testing your server and client
+
+⚠️ **Avoid using stdio in distributed environments**:
+
+stdio transport is not designed for inter-process communication across containers. Therefore, it’s a poor choice for
+environments like Kubernetes or OpenShift clusters.
+
+There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
+You can check an example of stdio mcp server and client implementation at [stdio](stdio)
+
+### sse
+
+There are 4 main strategies for client-server communication in real time:
+
+1) WebSocket
+2) Server-Sent Events
+3) Long Polling
+4) Short Polling
+
+**WebSocket** is a communication protocol on top of a TCP connection for exchanging messages between a client and a
+server, it uses a persistent connection. Most of REST API's built on this protocol.
+
+**SSE (Server-Sent Events)** is a push technology (communication is initiated by the server, not the client) that allows 
+the client to receive automatic updates from the server via HTTP connections.
+
+<img src="images/sse.png" width="600" height="550" />
+
+
+https://dev.to/minompi/websocket-vs-server-sent-events-2b77
+
 ## The building blocks of context in MCP
 
 ### Messages
@@ -67,7 +117,7 @@ MCP structures conversations as a sequence of messages, each with a clearly defi
 * User – That’s us, the humans asking questions or giving instructions.
 * Assistant – The AI model responding to us.
 * System – System-level instructions that guide the model’s behavior (e.g., “Answer as a polite assistant” or “Only use
-the provided documents”).
+  the provided documents”).
 * Tool – Messages representing the output of external tools or services that the MCP server interacts with.
 
 Each message contains text and can optionally include metadata like timestamps, language, priority, and more.
@@ -89,6 +139,7 @@ Tools in MCP are essentially external functions or services that the model can c
 built-in capabilities.
 
 Each tool is defined by the MCP server with three key elements:
+
 * A name
 * A clear description, so the model understands when to use it
 * A parameter schema that defines what kind of inputs the tool expects
@@ -104,12 +155,14 @@ async def get_alerts(state: str) -> str:
     """
     pass
 
+
 @mcp.tool()
 def multiply(a: int, b: int) -> int:
     """
     Multiply two numbers
     """
     return a * b
+
 
 @mcp.tool()
 async def get_japan_economic_statistics() -> str:
@@ -180,13 +233,13 @@ Here’s what a list_tools response might look like for the example we mentioned
 }
 ~~~
 
-
 Once the model receives the list of available tools, it decides which one (if any) fits the user’s request. When it
 wants to use one, it responds with something like:
 “I want to call tool X with these parameters.”
 
 The MCP client intercepts this response, sends the request to the appropriate MCP server, which runs the tool and
-returns the result. That result—whether it’s data from an API, a database query, or something else - is added back into
+returns the result. That result - whether it’s data from an API, a database query, or something else - is added back
+into
 the conversation as a message with the tool role.
 
 From there, the model picks up the conversation again, now with the new information in hand.
@@ -194,8 +247,6 @@ From there, the model picks up the conversation again, now with the new informat
 MCP standardizes the entire tool interaction lifecycle—declaration, invocation, error handling, and result delivery.
 This makes it possible to build complex chains of actions: the model can call multiple tools in sequence, with each step
 depending on the previous one.
-
-
 
 ### Memory: Giving the Assistant a Long-Term Brain
 
@@ -221,6 +272,7 @@ In addition to calling tools, the model often needs to access static data like f
 or logs. In MCP, these are referred to as resources.
 
 Resources are announced by the server using URI schemes, such as:
+
 * file:///path/doc.txt
 * database://customers/123
 
@@ -239,53 +291,29 @@ a user’s machine. However, it’s currently limited to Claude Desktop and isn�
 
 Beyond basic system messages, MCP introduces the concept of Prompts—predefined interaction templates for common tasks.
 
-These are more than just static instructions—they’re structured workflows that guide the model through specific patterns of interaction. Prompts can be combined and chained to form more complex behaviors.
+These are more than just static instructions—they’re structured workflows that guide the model through specific patterns
+of interaction. Prompts can be combined and chained to form more complex behaviors.
 
 For example, a “log analysis” prompt might include:
-	1.	Searching logs using a tool like Elasticsearch
-	2.	Summarizing the findings (handled by the model itself)
-	3.	Generating a conclusion or report based on a predefined format
 
-MCP allows you to explicitly define and declare these prompt sequences, enabling models to tackle complex tasks in a controlled, repeatable way.
+1. Searching logs using a tool like Elasticsearch
+2. Summarizing the findings (handled by the model itself)
+3. Generating a conclusion or report based on a predefined format
+
+MCP allows you to explicitly define and declare these prompt sequences, enabling models to tackle complex tasks in a
+controlled, repeatable way.
 
 As you may have noticed, MCP turns generative AI into something much bigger than just a chatbot.
 
 Don’t believe me?
-Check it out for yourself: https://mcp.so — you’ll find tons of MCP-driven servers and clients built for all kinds of use cases.
-
+Check it out for yourself: https://mcp.so — you’ll find tons of MCP-driven servers and clients built for all kinds of
+use cases.
 
 Want to manage your data with LLMs using a Redis server? ✅
 
 Need to search GitHub through an AI-powered interface? ✅
 
 The ecosystem is growing fast and it’s just getting started.
-
-### Transports
-
-https://modelcontextprotocol.io/docs/concepts/transports#standard-input-output-stdio
-
-MCP supports 2 types of transport
-
-#### stdio
-
-The stdio transport enables communication through standard input and output streams.
-
-<img src="images/mcp_stdio.png" width="700" height="400" />
-
-Use stdio when:
-
-* Building command-line tools
-* Implementing local integrations
-* Testing your server and client
-
-⚠️ Important:
-Avoid using stdio transport in Kubernetes, OpenShift clusters, or even in Docker Compose setups running on a single
-server. It’s not designed for inter-process communication across containers or distributed environments.
-
-There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
-You can check an example of stdio mcp server and client implementation at [stdio](stdio)
-
-#### sse
 
 Start server:
 
