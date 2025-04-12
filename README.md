@@ -68,6 +68,8 @@ MCP includes two standard [transport](https://modelcontextprotocol.io/docs/conce
 
 ### stdio
 
+https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http
+
 The stdio transport enables communication through standard input and output streams.
 
 <img src="images/mcp_stdio.png" width="600" height="300" />
@@ -88,23 +90,34 @@ You can check an example of stdio mcp server and client implementation at [stdio
 
 ### sse
 
-There are 4 main strategies for client-server communication in real time:
+There are 4 main strategies for client-server communication in **real time**:
 
-1) WebSocket
-2) Server-Sent Events
-3) Long Polling
-4) Short Polling
+| Method                   | Connection        | Bidirectional | Latency | Server Load | Usage                                                |
+|--------------------------|-------------------|---------------|---------|-------------|------------------------------------------------------|
+| WebSocket                | Persistent        | Yes           | Low     | Low         | Chats, online games, stock trading platforms         |
+| SSE (Server-Sent Events) | Persistent        | No            | Low     | Low         | News feeds, notifications                            |
+| Long Polling             | Repeated requests | No            | Medium  | Medium      | Notifications, chats (if WebSocket is not available) |
+| Short Polling            | Periodic requests | No            | High    | High        | Data updates with infrequent changes                 |
 
-**WebSocket** is a communication protocol on top of a TCP connection for exchanging messages between a client and a
-server, it uses a persistent connection. Most of REST API's built on this protocol.
+**REST API ≠ REAL TIME**. It's completely different types of communications.
 
-**SSE (Server-Sent Events)** is a push technology (communication is initiated by the server, not the client) that allows 
+| Feature                             | Method        | Endpoint                          | Protocol | Description                                           |
+|-------------------------------------|---------------|-----------------------------------|----------|-------------------------------------------------------|
+| Get user profile                    | `GET`         | `/api/users/:id`                  | REST     | Fetch profile info for a specific user                |
+| Post a new status update            | `POST`        | `/api/posts`                      | REST     | Create a new post                                     |
+| Like a post                         | `POST`        | `/api/posts/:id/like`             | REST     | Like someone’s post                                   |
+| Follow another user                 | `POST`        | `/api/users/:id/follow`           | REST     | Follow a user                                         |
+| Real-time feed of new posts         | `EventStream` | `/stream/feed`                    | SSE      | Live updates when people you follow publish new posts |
+| Live notifications (likes/comments) | `EventStream` | `/stream/notifications`           | SSE      | Get notified instantly when someone likes or comments |
+| Typing indicator in comments        | `EventStream` | `/stream/typing-comments/:postId` | SSE      | See “User is typing...” in real time under a post     |
+| Live online status of friends       | `EventStream` | `/stream/friends-status`          | SSE      | Get notified when friends go online or offline        |
+
+**SSE (Server-Sent Events)** is a push technology (communication is initiated by the server, not the client) that allows
 the client to receive automatic updates from the server via HTTP connections.
 
 <img src="images/sse.png" width="600" height="550" />
 
 
-https://dev.to/minompi/websocket-vs-server-sent-events-2b77
 
 ## The building blocks of context in MCP
 
