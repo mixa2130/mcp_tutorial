@@ -266,66 +266,7 @@ async def get_japan_economic_statistics() -> str:
     pass
 ~~~
 
-Here’s what a list_tools response might look like for the example we mentioned above:
-
-~~~json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "tools": [
-      {
-        "name": "multiply",
-        "description": "\n    Multiply two numbers\n    ",
-        "inputSchema": {
-          "properties": {
-            "a": {
-              "title": "A",
-              "type": "integer"
-            },
-            "b": {
-              "title": "B",
-              "type": "integer"
-            }
-          },
-          "required": [
-            "a",
-            "b"
-          ],
-          "title": "multiplyArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "get_japan_economic_statistics",
-        "description": "\n    Use this tool if you need any data about the Japanese economic over the past 25 years.\n    ",
-        "inputSchema": {
-          "properties": {},
-          "title": "get_japan_economic_statisticsArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "get_alerts",
-        "description": "Get weather alerts for a US state.\n\n    Args:\n        state: Two-letter US state code (e.g. CA, NY)\n    ",
-        "inputSchema": {
-          "properties": {
-            "state": {
-              "title": "State",
-              "type": "string"
-            }
-          },
-          "required": [
-            "state"
-          ],
-          "title": "get_alertsArguments",
-          "type": "object"
-        }
-      }
-    ]
-  }
-}
-~~~
+[JsonRpc list tools example] ([list_tools.json](examples/list_tools.json))
 
 Once the model receives the list of available tools, it decides which one (if any) fits the user’s request. When it
 wants to use one, it responds with something like:
@@ -333,8 +274,7 @@ wants to use one, it responds with something like:
 
 The MCP client intercepts this response, sends the request to the appropriate MCP server, which runs the tool and
 returns the result. That result - whether it’s data from an API, a database query, or something else - is added back
-into
-the conversation as a message with the tool role.
+into the conversation as a message with the tool role.
 
 From there, the model picks up the conversation again, now with the new information in hand.
 
@@ -346,12 +286,14 @@ depending on the previous one.
 
 Wouldn’t it be nice if the assistant could remember important things between sessions?
 
-MCP makes that possible through memory servers—special services that can store notes, facts, or vectorized data for
+MCP makes that possible through `memory servers` - special services that can store notes, facts, or vectorized data for
 semantic search.
 
 There are already example implementations on GitHub, from Anthropic and others, under names like Memory Banks, Memory
 Boxes, and more. These servers expose tools that the model can call to save information (save_memory) or later recall
-it (search_memory).
+it (search_memory). 
+
+As an example: https://docs.cline.bot/improving-your-prompting-skills/cline-memory-bank 
 
 This gives LLMs something like long-term memory—allowing them to retain user preferences, project details, or key facts
 across sessions. Importantly, all memory data is stored server-side, which is essential for privacy and control.
@@ -396,6 +338,9 @@ For example, a “log analysis” prompt might include:
 
 MCP allows you to explicitly define and declare these prompt sequences, enabling models to tackle complex tasks in a
 controlled, repeatable way.
+
+
+## Summary 
 
 As you may have noticed, MCP turns generative AI into something much bigger than just a chatbot.
 

@@ -1,0 +1,56 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "multiply",
+        "description": "\n    Multiply two numbers\n    ",
+        "inputSchema": {
+          "properties": {
+            "a": {
+              "title": "A",
+              "type": "integer"
+            },
+            "b": {
+              "title": "B",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "title": "multiplyArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_japan_economic_statistics",
+        "description": "\n    Use this tool if you need any data about the Japanese economic over the past 25 years.\n    ",
+        "inputSchema": {
+          "properties": {},
+          "title": "get_japan_economic_statisticsArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_alerts",
+        "description": "Get weather alerts for a US state.\n\n    Args:\n        state: Two-letter US state code (e.g. CA, NY)\n    ",
+        "inputSchema": {
+          "properties": {
+            "state": {
+              "title": "State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "state"
+          ],
+          "title": "get_alertsArguments",
+          "type": "object"
+        }
+      }
+    ]
+  }
+}
