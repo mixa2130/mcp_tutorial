@@ -127,7 +127,6 @@ Okay, so how does it work?
       <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="600"/>
     </td>
     <td>
-
 **MCP session initialization**
 
 1. Client -> Server: Start SSE session
@@ -136,8 +135,7 @@ Okay, so how does it work?
 (e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in subsequent communications.
 3. Client -> Server: MCP session initialization request
 4. Client -> Server: MCP Notifications initialization request
-
-    </td>
+  </td>
 
   </tr>
 
