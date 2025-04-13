@@ -3,6 +3,10 @@
 https://dev.to/shadow_b/understanding-mcp-model-context-protocol-with-examples-k75
 https://habr.com/ru/articles/893482/
 https://habr.com/ru/articles/899088/
+https://dev.to/zachary62/model-context-protocol-mcp-simply-explained-function-calling-rebranded-or-genuine-breakthrough-4c04
+https://dev.to/d04975d650beed571b/mcp-memory-bank-1jpm
+
+https://dev.to/sudhakar_punniyakotti/mcp-the-api-gateway-for-ai-agents-4ldn
 
 Our Goals:
 
@@ -117,7 +121,29 @@ the client to receive automatic updates from the server via HTTP connections.
 
 <img src="images/sse.png" width="600" height="550" />
 
+But do you remember what I said about MCP? It’s a protocol. SSE is just a transport used within that protocol.
 
+Okay, so how does it work?
+
+<table>
+  <tr>
+    <td>
+      <img src="images/mcp_sersssion.png" alt="Session Diagram" width="600"/>
+    </td>
+    <td>
+
+**Description**
+
+1. Client -> Server: Start SSE session
+2. Server -> Client: The server responds with a session ID (e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in
+   subsequent communications.
+3. Client -> Server: MCP session initialization request
+4. Client -> Server: MCP Notifications initialization request
+
+    </td>
+  </tr>
+
+</table>
 
 ## The building blocks of context in MCP
 
