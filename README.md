@@ -409,13 +409,6 @@ Need to search GitHub through an AI-powered interface? ✅
 
 The ecosystem is growing fast and it’s just getting started.
 
-## RUN
-
-Start server:
-
-~~~
-python3 -m server
-~~~
 
 ## Resources
 
