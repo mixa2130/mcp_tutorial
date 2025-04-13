@@ -119,7 +119,7 @@ There are 4 main strategies for client-server communication in **real time**:
 **SSE (Server-Sent Events)** is a push technology (communication is initiated by the server, not the client) that allows
 the client to receive automatic updates from the server via HTTP connections.
 
-<img src="images/sse.png" width="600" height="550" />
+<img src="images/sse.png" width="400" height="400" />
 
 But do you remember what I said about MCP? It’s a protocol. SSE is just a transport used within that protocol.
 
@@ -141,9 +141,44 @@ Okay, so how does it work?
 4. Client -> Server: MCP Notifications initialization request
 
     </td>
+
   </tr>
 
 </table>
+
+<table>
+  <tr>
+    <td>
+      <img src="images/sse_client_server_communication.svg" alt="Session Diagram" width="600"/>
+    </td>
+    <td>
+
+**Description**
+
+1. Client -> Server: Start SSE session
+2. Server -> Client: The server responds with a session ID (e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in
+   subsequent communications.
+3. Client -> Server: MCP session initialization request
+4. Client -> Server: MCP Notifications initialization request
+
+    </td>
+
+  </tr>
+
+</table>
+
+
+The `/sse` route represents the SSE session I mentioned earlier. It’s kept open the entire time we communicate with the
+MCP server.
+
+As soon as the SSE session starts, server immediately responds us with 2 messages:
+
+* `endpoint` - the server endpoint used for MCP communication
+* `message` - the server description
+
+![sse_session_postman.png](images/sse_session_postman.png)
+
+Server description example: [server_description.json](examples/server_description.json)
 
 ## The building blocks of context in MCP
 
