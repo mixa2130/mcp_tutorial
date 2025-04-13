@@ -146,8 +146,6 @@ The server can either:
 * Respond with a single HTTP response
 * Open an SSE stream (server continuously pushes messages to the client)
 
-<img src="images/sse.png" width="400" height="400" />
-
   </td>
 
   </tr>

@@ -1,0 +1,15 @@
+[project]
+name = "mcp-tutorial"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "langchain-gigachat>=0.3.10",
+    "langchain-mcp-adapters>=0.0.7",
+    "langgraph>=0.3.29",
+    "mcp>=1.6.0",
+    "python-dotenv>=1.1.0",
+]
+
+[tool.uv.workspace]
+members = ["venv"]
