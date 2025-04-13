@@ -54,6 +54,8 @@ MCP also gives models access to two key types of resources:
 * Data Sources: Your computer’s files, databases, and services that MCP servers can securely access
 * Remote Services: External systems available over the internet (e.g., through APIs) that MCP servers can connect to
 
+____
+
 ## Transports
 
 MCP uses JSON-RPC 2.0 as its wire format.
@@ -107,21 +109,19 @@ Okay, so how does it work?
 
 **MCP session initialization**
 
-1. Client -> Server: Start SSE session
-2. Server -> Client: The server responds with a session ID
+1. The client starts the SSE session.
+2. The server responds with a session ID
+   (e.g., Mcp-Session-Id: 5c192d6b...), which will be used in all subsequent communications.
+3. The client sends an initialization request—similar to a TCP handshake.
+4. The client also sends an MCP Notifications initialization request—again, like a handshake in TCP.
 
-(e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in subsequent communications.
-
-3. Client -> Server: MCP session initialization request
-4. Client -> Server: MCP Notifications initialization request
-
-The `/sse` route represents the SSE session I mentioned earlier. It’s kept open the entire time we communicate with the
-MCP server.
+The `/sse` route represents the SSE session I mentioned earlier. *It’s kept open the entire time we communicate with the
+MCP server.*
 
 As soon as the SSE session starts, server immediately responds us with 2 messages:
 
-* `endpoint` - the server endpoint used for MCP communication. *`/messages`*
 * `message` - [the server description](examples/server_description.json)
+* `endpoint` - the server endpoint used for MCP communication
 
 ![sse_session_postman.png](images/sse_session_postman.png)
 
@@ -132,7 +132,7 @@ As soon as the SSE session starts, server immediately responds us with 2 message
 
 <tr>
     <td>
-      <img src="images/sse_client_server_communication.png" alt="Session Diagram" width="1200"/>
+      <img src="images/sse_client_server_communication-Page-1.png" alt="Session Diagram" width="1200"/>
     </td>
     <td>
 
@@ -148,6 +148,33 @@ The server can either:
 
 <img src="images/sse.png" width="400" height="400" />
 
+  </td>
+
+  </tr>
+
+<tr>
+    <td>
+      <img src="images/sse_client_server_communication-Page-3.png" alt="Session Diagram" width="1200"/>
+    </td>
+    <td>
+
+**MCP Notifications**
+
+Servers can notify clients when their list of available resources changes via the
+`notifications/resources/list_changed notification`
+
+Clients can subscribe to updates for specific resources:
+
+1. Client sends `resources/subscribe` with resource URI
+2. Server sends `notifications/resources/updated` when the resource changes
+3. Client can fetch latest content with `resources/read`
+4. Client can unsubscribe with `resources/unsubscribe`
+
+For long-term operations, the MCP supports a progress tracking mechanism. When initiating such an operation, the client
+can include a progress Token in the request. In response, the server can send `notifications/progress` notifications
+containing the current progress and, if available, the total number of steps. This allows the client to inform the user
+about the current status of the task.
+
  </td>
 
   </tr>
@@ -156,11 +183,7 @@ The server can either:
 
 ### stdio
 
-https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http
-
 The stdio transport enables communication through standard input and output streams.
-
-<img src="images/mcp_stdio.png" width="600" height="300" />
 
 ✅ **Use stdio when:**
 
@@ -175,6 +198,9 @@ environments like Kubernetes or OpenShift clusters.
 
 There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
 You can check an example of stdio mcp server and client implementation at [stdio](stdio)
+
+
+____
 
 ## The building blocks of context in MCP
 
