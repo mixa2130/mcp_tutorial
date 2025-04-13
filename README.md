@@ -124,7 +124,7 @@ Okay, so how does it work?
 <table>
   <tr>
     <td>
-      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="800" height="600"/>
+      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="600"/>
     </td>
     <td>
       
@@ -178,31 +178,6 @@ The server can either:
 
 
 
-
-<table>
-  <tr>
-    <td>
-      <img src="images/sse_client_server_communication.png" alt="Session Diagram" width="600"/>
-    </td>
-    <td>
-
-**MCP Request-Response**
-
-1. The client asks server which tools, resources or prompts are available
-2. The client sends a request to the server.
-
-The server can either:
-
-* Respond with a single HTTP response
-* Open an SSE stream (server continuously pushes messages to the client)
-
-<img src="images/sse.png" width="400" height="400" />
-
- </td>
-
-  </tr>
-
-</table>
 
 ## The building blocks of context in MCP
 
