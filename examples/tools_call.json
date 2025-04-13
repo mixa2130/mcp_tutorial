@@ -1,0 +1,11 @@
+{
+  "method": "initialize",
+  "params": {
+    "name": "get_forecast",
+    "arguments": {
+      "latitude": 47.65,
+      "longitude": -117.4
+    }
+  },
+ "jsonrpc": "2.0", "id": 3
+}
