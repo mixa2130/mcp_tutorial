@@ -124,9 +124,10 @@ Okay, so how does it work?
 <table>
   <tr>
     <td>
-      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="600"/>
+      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="1800" height="600"/>
     </td>
     <td>
+      
 **MCP session initialization**
 
 1. Client -> Server: Start SSE session
