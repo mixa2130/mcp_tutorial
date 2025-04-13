@@ -124,7 +124,7 @@ Okay, so how does it work?
 <table>
   <tr>
     <td>
-      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="1800" height="600"/>
+      <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="800" height="600"/>
     </td>
     <td>
       
@@ -136,11 +136,6 @@ Okay, so how does it work?
 (e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in subsequent communications.
 3. Client -> Server: MCP session initialization request
 4. Client -> Server: MCP Notifications initialization request
-  </td>
-
-  </tr>
-
-</table>
 
 The `/sse` route represents the SSE session I mentioned earlier. It’s kept open the entire time we communicate with the
 MCP server.
@@ -148,11 +143,40 @@ MCP server.
 As soon as the SSE session starts, server immediately responds us with 2 messages:
 
 * `endpoint` - the server endpoint used for MCP communication
-* `message` - the server description
+* `message` - [the server description](examples/server_description.json)
 
 ![sse_session_postman.png](images/sse_session_postman.png)
 
-Server description example: [server_description.json](examples/server_description.json)
+
+  </td>
+
+  </tr>
+
+<tr>
+    <td>
+      <img src="images/sse_client_server_communication.png" alt="Session Diagram" width="600"/>
+    </td>
+    <td>
+
+**MCP Request-Response**
+
+1. The client asks server which tools, resources or prompts are available
+2. The client sends a request to the server.
+
+The server can either:
+
+* Respond with a single HTTP response
+* Open an SSE stream (server continuously pushes messages to the client)
+
+<img src="images/sse.png" width="400" height="400" />
+
+ </td>
+
+  </tr>
+
+</table>
+
+
 
 
 <table>
