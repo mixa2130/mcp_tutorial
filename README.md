@@ -1,18 +1,17 @@
 # mcp_tutorial
 
-https://dev.to/shadow_b/understanding-mcp-model-context-protocol-with-examples-k75
-https://habr.com/ru/articles/893482/
-https://habr.com/ru/articles/899088/
-https://dev.to/zachary62/model-context-protocol-mcp-simply-explained-function-calling-rebranded-or-genuine-breakthrough-4c04
-https://dev.to/d04975d650beed571b/mcp-memory-bank-1jpm
+> Ever wished your AI assistant could actually do more than just chat? Like send real emails, schedule your meetings,
+> analyze your spreadsheets, or search the web for you? The Model Context Protocol (MCP) aims to make this possible, but
+> is it really revolutionary?
 
-https://dev.to/sudhakar_punniyakotti/mcp-the-api-gateway-for-ai-agents-4ldn
+In this tutorial, we will:
 
-Our Goals:
-
-1. Explore what MCP is and how to use it
+1. Explore what MCP is and why we need it
+2. Dive in and understand how the protocol works under the hood
 2. Build an MCP server that can run outside your local machine - for example, in a Kubernetes cluster
 3. Create an MCP client that uses an LLM to communicate with our server
+
+Let's dive in!
 
 ## What is MCP and why do we need it ?
 
@@ -64,35 +63,13 @@ JSON-RPC format for transmission and converting received JSON-RPC messages back 
 
 There are three types of JSON-RPC messages used:
 
-1) Requests
-2) Responses
-3) Notifications
+1) **Requests**
+2) **Responses**
+3) **Notifications**
 
 MCP includes two standard [transport](https://modelcontextprotocol.io/docs/concepts/transports) implementations:
 
-### stdio
-
-https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http
-
-The stdio transport enables communication through standard input and output streams.
-
-<img src="images/mcp_stdio.png" width="600" height="300" />
-
-✅ **Use stdio when:**
-
-* Building command-line tools
-* Implementing local integrations
-* Testing your server and client
-
-⚠️ **Avoid using stdio in distributed environments**:
-
-stdio transport is not designed for inter-process communication across containers. Therefore, it’s a poor choice for
-environments like Kubernetes or OpenShift clusters.
-
-There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
-You can check an example of stdio mcp server and client implementation at [stdio](stdio)
-
-### sse
+### SSE - Production Ready
 
 There are 4 main strategies for client-server communication in **real time**:
 
@@ -127,13 +104,14 @@ Okay, so how does it work?
       <img src="images/sse_client_server_communication-Page-2.png" alt="Session Diagram" width="1200"/>
     </td>
     <td>
-      
+
 **MCP session initialization**
 
 1. Client -> Server: Start SSE session
 2. Server -> Client: The server responds with a session ID
 
 (e.g., `Mcp-Session-Id`: 1868a90c...), which will be used in subsequent communications.
+
 3. Client -> Server: MCP session initialization request
 4. Client -> Server: MCP Notifications initialization request
 
@@ -142,7 +120,7 @@ MCP server.
 
 As soon as the SSE session starts, server immediately responds us with 2 messages:
 
-* `endpoint` - the server endpoint used for MCP communication
+* `endpoint` - the server endpoint used for MCP communication. *`/messages`*
 * `message` - [the server description](examples/server_description.json)
 
 ![sse_session_postman.png](images/sse_session_postman.png)
@@ -176,8 +154,27 @@ The server can either:
 
 </table>
 
+### stdio
 
+https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http
 
+The stdio transport enables communication through standard input and output streams.
+
+<img src="images/mcp_stdio.png" width="600" height="300" />
+
+✅ **Use stdio when:**
+
+* Building command-line tools
+* Implementing local integrations
+* Testing your server and client
+
+⚠️ **Avoid using stdio in distributed environments**:
+
+stdio transport is not designed for inter-process communication across containers. Therefore, it’s a poor choice for
+environments like Kubernetes or OpenShift clusters.
+
+There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
+You can check an example of stdio mcp server and client implementation at [stdio](stdio)
 
 ## The building blocks of context in MCP
 
@@ -388,8 +385,19 @@ Need to search GitHub through an AI-powered interface? ✅
 
 The ecosystem is growing fast and it’s just getting started.
 
+## RUN
+
 Start server:
 
 ~~~
 python3 -m server
 ~~~
+
+## Resources
+
+* https://dev.to/shadow_b/understanding-mcp-model-context-protocol-with-examples-k75
+* https://habr.com/ru/articles/893482/
+* https://habr.com/ru/articles/899088/
+* https://dev.to/zachary62/model-context-protocol-mcp-simply-explained-function-calling-rebranded-or-genuine-breakthrough-4c04
+* https://dev.to/d04975d650beed571b/mcp-memory-bank-1jpm
+* https://dev.to/sudhakar_punniyakotti/mcp-the-api-gateway-for-ai-agents-4ldn
