@@ -28,7 +28,7 @@ AI: a clean, standardized connector between smart assistants and the data ecosys
 <img src="images/mcp_type_c.png" width="700" height="400" />
 
 
-The main goal of MCP is to unify how applications share **context* with large language models. That context can include
+The main goal of MCP is to unify how applications share *context* with large language models. That context can include
 anything from conversation history and prompt instructions to real-time search results, proprietary data, or even memory
 from past interactions. Whether the relevant information lives in a file system, corporate application, database, or
 internal knowledge base, MCP provides a single, consistent way to surface it to the model.
@@ -63,6 +63,7 @@ MCP uses JSON-RPC 2.0 as its wire format.
 The transport layer is responsible for converting MCP protocol messages into
 JSON-RPC format for transmission and converting received JSON-RPC messages back into MCP protocol messages.
 
+
 There are three types of JSON-RPC messages used:
 
 1) **Requests**
@@ -72,6 +73,8 @@ There are three types of JSON-RPC messages used:
 MCP includes two standard [transport](https://modelcontextprotocol.io/docs/concepts/transports) implementations:
 
 ### SSE - Production Ready
+
+<img src="images/mcp_sse.png" width="700" height="400" />
 
 There are 4 main strategies for client-server communication in **real time**:
 
@@ -179,6 +182,8 @@ about the current status of the task.
 
 </table>
 
+Python implementation example: [sse example](sse)
+
 ### stdio
 
 The stdio transport enables communication through standard input and output streams.
@@ -266,7 +271,7 @@ async def get_japan_economic_statistics() -> str:
     pass
 ~~~
 
-[JsonRpc list tools example] ([list_tools.json](examples/list_tools.json))
+[JsonRpc list tools example](examples/list_tools.json)
 
 Once the model receives the list of available tools, it decides which one (if any) fits the user’s request. When it
 wants to use one, it responds with something like:
@@ -291,9 +296,13 @@ semantic search.
 
 There are already example implementations on GitHub, from Anthropic and others, under names like Memory Banks, Memory
 Boxes, and more. These servers expose tools that the model can call to save information (save_memory) or later recall
-it (search_memory). 
+it (search_memory).
 
-As an example: https://docs.cline.bot/improving-your-prompting-skills/cline-memory-bank 
+As an example:
+
+* https://docs.cline.bot/improving-your-prompting-skills/cline-memory-bank
+* https://mcp.so/server/mcp-mem0/coleam00
+* https://glama.ai/mcp/servers/@henryhawke/mcp-titan
 
 This gives LLMs something like long-term memory—allowing them to retain user preferences, project details, or key facts
 across sessions. Importantly, all memory data is stored server-side, which is essential for privacy and control.
@@ -301,6 +310,9 @@ across sessions. Importantly, all memory data is stored server-side, which is es
 MCP also helps manage short-term memory. When a dialogue gets too long to fit in the model’s context window, the Context
 Manager can step in to compress or summarize the history—preserving the most important information while discarding less
 relevant details.
+
+_My attempts to find examples of MCP short-term memory have failed 😔 But MCP does officially declare support for such a
+mechanism._
 
 ### Files & Resources
 
@@ -339,10 +351,12 @@ For example, a “log analysis” prompt might include:
 MCP allows you to explicitly define and declare these prompt sequences, enabling models to tackle complex tasks in a
 controlled, repeatable way.
 
-
-## Summary 
+## Summary
 
 As you may have noticed, MCP turns generative AI into something much bigger than just a chatbot.
+
+
+
 
 Don’t believe me?
 Check it out for yourself: https://mcp.so — you’ll find tons of MCP-driven servers and clients built for all kinds of
@@ -354,12 +368,9 @@ Need to search GitHub through an AI-powered interface? ✅
 
 The ecosystem is growing fast and it’s just getting started.
 
-
 ## Resources
 
 * https://dev.to/shadow_b/understanding-mcp-model-context-protocol-with-examples-k75
-* https://habr.com/ru/articles/893482/
-* https://habr.com/ru/articles/899088/
 * https://dev.to/zachary62/model-context-protocol-mcp-simply-explained-function-calling-rebranded-or-genuine-breakthrough-4c04
 * https://dev.to/d04975d650beed571b/mcp-memory-bank-1jpm
 * https://dev.to/sudhakar_punniyakotti/mcp-the-api-gateway-for-ai-agents-4ldn
