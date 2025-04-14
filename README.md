@@ -63,7 +63,6 @@ MCP uses JSON-RPC 2.0 as its wire format.
 The transport layer is responsible for converting MCP protocol messages into
 JSON-RPC format for transmission and converting received JSON-RPC messages back into MCP protocol messages.
 
-
 There are three types of JSON-RPC messages used:
 
 1) **Requests**
@@ -202,6 +201,25 @@ environments like Kubernetes or OpenShift clusters.
 There are lots of stdio servers and clients examples in the net. Therefore, I will not focus on this.
 You can check an example of stdio mcp server and client implementation at [stdio](stdio)
 
+### Authorization
+
+Authorization is `OPTIONAL` for MCP implementations. When supported:
+
+* Implementations using an HTTP-based transport `SHOULD` conform to this specification.
+* Implementations using an STDIO transport `SHOULD NOT` follow this specification, and instead retrieve credentials from
+  the environment.
+* Implementations using alternative transports `MUST` follow established security best practices for their protocol.
+
+The Model Context Protocol provides authorization capabilities at the transport level, enabling MCP clients to make
+requests to restricted MCP servers on behalf of resource owners.
+
+If you’re using Kubernetes or OpenShift with the Istio framework, parsing HTTP traffic and implementing authorization
+with mTLS or another mechanism won’t be an issue.
+
+However, out of the box, MCP only supports the OAuth2 authentication protocol.
+
+* [MCP OAuth2 Authorization](https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization)
+* [Cloudflare MCP OAuth flow](https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/)
 
 ____
 
@@ -354,9 +372,6 @@ controlled, repeatable way.
 ## Summary
 
 As you may have noticed, MCP turns generative AI into something much bigger than just a chatbot.
-
-
-
 
 Don’t believe me?
 Check it out for yourself: https://mcp.so — you’ll find tons of MCP-driven servers and clients built for all kinds of
